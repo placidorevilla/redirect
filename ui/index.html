@@ -1,0 +1,143 @@
+<html>
+<script src="angular.min.js"></script>
+<link rel="stylesheet"
+  href="bootstrap.min.css" />
+
+<body ng-app="appModule"
+  class="container">
+  <table ng-controller="mainController"
+    class="table">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Hits</th>
+        <th>Local URL</th>
+        <th>URL template</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="(service, template) in services">
+        <td>
+          <a href="http://127.0.0.1:{{redirectPort}}/{{service}}">
+            {{service}}
+          </a>
+        </td>
+        <td>{{template.hits}}</td>
+        <td>
+          <a href="http://127.0.0.1:{{redirectPort}}/{{service}}">
+            http://127.0.0.1:{{redirectPort}}/{{service}}
+          </a>
+        </td>
+        <td>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text"
+                placeholder="Target URL template"
+                name="template"
+                class="form-control"
+                ng-model="services[service].template" />
+
+              <span class="input-group-btn">
+                <button ng-click="add(service, services[service].template)"
+                  class="btn btn-info">Update</a>
+              </span>
+              <span class="input-group-btn">
+                <button ng-click="remove(service)"
+                  class="btn btn-danger">Remove</a>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="well">
+    <form method="POST"
+      action="/api/"
+      class="form-horizontal">
+      <fieldset>
+        <legend>Add new service</legend>
+        <div class="form-group">
+          <label for="newService"
+            class="col-lg-2 control-label">
+            Unique service path
+          </label>
+          <div class="col-lg-10">
+            <input type="text"
+              placeholder="Service"
+              class="form-control"
+              name="service"
+              id="newService" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="newTemplate"
+            class="col-lg-2 control-label">
+            URL template for redirects
+          </label>
+          <div class="col-lg-10">
+            <input type="text"
+              class="form-control "
+              placeholder="Target URL template"
+              name="template"
+              id="newTemplate" />
+            <span class="help-block">All functions from Go text/template can be used with environment as http.Request</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-lg-10 col-lg-offset-2">
+            <button type="reset"
+              class="btn btn-default">Cancel</button>
+            <button type="submit"
+              class="btn btn-success">Add</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</body>
+<script>
+  var appModule = angular.module("appModule", []);
+  appModule.controller("mainController", ["$scope", "$http", "$interval", function($scope, $http, $interval) {
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+    $scope.services = {};
+    $scope.redirectPort = 0;
+    $scope.update = function() {
+      $http.get('/api/')
+        .then(function(response) {
+          $scope.redirectPort = response.headers('X-Redir-Port');
+          $scope.services = response.data;
+        });
+    }
+    $scope.add = function(service, template) {
+      var params = [{
+        name: 'service',
+        value: service
+      }, {
+        name: 'template',
+        value: template
+      }];
+      var query = params.map(function(pair) {
+        return encodeURIComponent(pair.name) + '=' + encodeURIComponent(pair.value)
+      }).join('&');
+      $http.post('/api/', query)
+        .then(function(response) {
+          $scope.update();
+        }, function(response) {
+          alert("Failed add or update");
+        });
+    }
+    $scope.remove = function(name) {
+      $http.delete('/api/' + name)
+        .then(function(response) {
+          $scope.update();
+        }, function(response) {
+          alert("Failed add");
+        });
+    }
+    $scope.update();
+    $interval($scope.update, 3000);
+  }]);
+</script>
+
+</html>
