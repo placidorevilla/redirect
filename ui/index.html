@@ -18,14 +18,14 @@
     <tbody>
       <tr ng-repeat="(service, template) in services">
         <td>
-          <a href="http://127.0.0.1:{{redirectPort}}/{{service}}">
+          <a href="http://{{host}}:{{redirectPort}}/{{service}}">
             {{service}}
           </a>
         </td>
         <td>{{template.hits}}</td>
         <td>
-          <a href="http://127.0.0.1:{{redirectPort}}/{{service}}">
-            http://127.0.0.1:{{redirectPort}}/{{service}}
+          <a href="http://{{host}}:{{redirectPort}}/{{service}}">
+            http://{{host}}:{{redirectPort}}/{{service}}
           </a>
         </td>
         <td>
@@ -101,6 +101,7 @@
   appModule.controller("mainController", ["$scope", "$http", "$interval", function($scope, $http, $interval) {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     $scope.services = {};
+    $scope.host = window.location.hostname;
     $scope.redirectPort = 0;
     $scope.update = function() {
       $http.get('/api/')
