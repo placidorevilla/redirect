@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -123,6 +124,14 @@ func (api *api) get(w http.ResponseWriter, r *http.Request) {
 
 // parse, buuild and add service or return error. Thread safe.
 func (api *api) addService(service string, templateText string) error {
+	parts := strings.Split(service, "/")
+	var res []string
+	for _, part := range parts {
+		if len(part) != 0 {
+			res = append(res, url.QueryEscape(part))
+		}
+	}
+	service = strings.Join(res, "/")
 	templ := &template.Template{}
 	t, err := templ.Parse(templateText)
 	if err != nil {
