@@ -15,11 +15,12 @@ Get [latest releases](https://github.com/reddec/redirect/releases), unpack and r
 
 ## Docker
 
-Translate this as you wish:
+Translate this ports as you wish:
 
 * `10100` - main redirect server
 * `10101` - UI web panel
 
+Use exposed volume `/etc/redirect` to persist data
 ## CLI
 
 ### -bind
