@@ -9,7 +9,7 @@ import (
 
 func main() {
 	uiFolder := flag.String("ui", "./ui", "Location of UI files")
-	uiAddr := flag.String("ui-addr", "0.0.0.0:10101", "Address for UI")
+	uiAddr := flag.String("ui-addr", "127.0.0.1:10101", "Address for UI")
 	configFile := flag.String("config", "./redir.json", "File to save configs")
 	bind := flag.String("bind", "0.0.0.0:10100", "Redirect address")
 	flag.Parse()
