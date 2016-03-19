@@ -13,6 +13,15 @@ Get [latest releases](https://github.com/reddec/redirect/releases), unpack and r
 
 # Usage
 
+## Docker
+
+Translate this as you wish:
+
+* `10100` - main redirect server
+* `10101` - UI web panel
+
+## CLI
+
 ### -bind
 
 Redirect address (default "0.0.0.0:10100"). You can do any HTTP operation
