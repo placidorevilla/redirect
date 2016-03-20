@@ -44,6 +44,11 @@ Address for UI (default "127.0.0.1:10101")
 * `/` - Will be served as static directory from specified directory
 * `/api/`  - API handlers
 
+# Actions on redirect server
+
+* `GET/POST/PUT/DELETE` - returns redirection with 302 Found status
+* `HEAD` - returns only real service location in `Location` header with 200 OK status
+
 # API
 
 ### GET

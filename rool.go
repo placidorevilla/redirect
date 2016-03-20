@@ -46,10 +46,14 @@ func (rool *rool) Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Add("Content-Length", "0")
+	// We send TARGET in Location header on HEAD request with 200 OK status
 	if r.Method == "HEAD" {
 		r.Close = true
+		w.Header().Add("Location", strings.TrimSpace(url.String()))
+		w.WriteHeader(http.StatusOK)
+		return
 	}
+	w.Header().Add("Content-Length", "0")
 	http.Redirect(w, r, strings.TrimSpace(url.String()), http.StatusFound)
 }
 
