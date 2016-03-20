@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -39,14 +40,17 @@ type ajax struct {
 // environment (http.Request)
 func (rool *rool) Handle(w http.ResponseWriter, r *http.Request) {
 	atomic.AddUint64(&rool.hits, 1)
-	r.ParseForm()
 	url := &bytes.Buffer{}
 	err := rool.Pattern.Execute(url, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, strings.TrimSpace(url.String()), http.StatusTemporaryRedirect)
+	w.Header().Add("Content-Length", "0")
+	if r.Method == "HEAD" {
+		r.Close = true
+	}
+	http.Redirect(w, r, strings.TrimSpace(url.String()), http.StatusFound)
 }
 
 // container and router of rools
@@ -67,6 +71,8 @@ func (manager *roolManager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := getCleanPath(r)
 	manager.RLock()
 	defer manager.RUnlock()
+	io.Copy(ioutil.Discard, r.Body)
+	defer r.Body.Close()
 	if rool, ok := manager.pathes[path]; ok {
 		rool.Handle(w, r)
 	} else {
