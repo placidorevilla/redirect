@@ -1,0 +1,26 @@
+builds:
+  - binary: redirect
+    main: cmd/redirect/main.go
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - 386
+      - arm64
+archive:
+  format: tar.gz
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+nfpm:
+  homepage: https://github.com/reddec/redirect
+  description: Simple, very fast, in a single binary, with web UI HTTP redirect service
+  maintainer: RedDec <owner@reddec.net>
+  license: MIT
+  formats:
+    - deb

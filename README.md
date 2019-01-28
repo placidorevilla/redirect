@@ -1,11 +1,29 @@
 # HTTP service discovery
 
+![Mx](docs/logo.svg)
+
+[![GitHub release](https://img.shields.io/github/release/reddec/redirect.svg)](https://github.com/reddec/redirect/releases)
+[![license](https://img.shields.io/github/license/reddec/redirect.svg)](https://github.com/reddec/redirect)
+[![](https://godoc.org/github.com/reddec/redirect?status.svg)](http://godoc.org/github.com/reddec/reddec/redirect)
+[![Snap Status](https://build.snapcraft.io/badge/reddec/redirect-to.svg)](https://build.snapcraft.io/user/reddec/redirect-to)
+
 Simple, very fast, in a single binary, with web UI HTTP redirect service
 
 # Install
 
-Get [latest releases](https://github.com/reddec/redirect/releases), unpack and run.
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/monexec)
 
+* [snapcraft: redirect-to](https://snapcraft.io/redirect-to)
+
+* Precompilled binaries: [release page](https://github.com/reddec/redirect/releases)
+
+* From source (required Go toolchain):
+
+```
+go get -v -u github.com/reddec/redirect/...
+```
+
+**snapcraft use `redirect-to` package**
 
 # WEB panel
 
@@ -35,13 +53,14 @@ It will be loaded at startup (if exists) and saved after each modification opera
 
 ### -ui
 
-Directory of static UI files (default "./ui").
+Directory of static UI files. If not defined - embedded used
 
 ### -ui-addr string
 
 Address for UI (default "127.0.0.1:10101")
 
 * `/` - Will be served as static directory from specified directory
+* `/ui/` - UI interface
 * `/api/`  - API handlers
 
 # Actions on redirect server

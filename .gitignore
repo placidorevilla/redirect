@@ -1,3 +1,4 @@
 redir.json
 build/**
 .idea
+dist

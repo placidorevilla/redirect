@@ -1,0 +1,27 @@
+name: redirect-to
+version: git
+summary: Simple, very fast, in a single binary, with web UI HTTP redirect service
+icon: docs/logo.svg
+description: |
+  Simple, very fast, in a single binary, with web UI HTTP redirect service.
+  Contains embedded UI that allows you check add/update/remove rules online and
+  check how many hits you rules collected
+
+  Source code licensed under MIT and can be obtained via https://github.com/reddec/redirect
+
+grade: stable
+confinement: strict
+
+parts:
+  go:
+    source-tag: go1.11.2
+  cli:
+    after: [go]
+    plugin: go
+    go-importpath: github.com/reddec/redirect
+
+apps:
+  redirect-to:
+    command: bin/redirect
+    plugs:
+      - network
