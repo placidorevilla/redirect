@@ -4,7 +4,7 @@
 
 [![GitHub release](https://img.shields.io/github/release/reddec/redirect.svg)](https://github.com/reddec/redirect/releases)
 [![license](https://img.shields.io/github/license/reddec/redirect.svg)](https://github.com/reddec/redirect)
-[![](https://godoc.org/github.com/reddec/redirect?status.svg)](http://godoc.org/github.com/reddec/reddec/redirect)
+[![](https://godoc.org/github.com/reddec/redirect?status.svg)](http://godoc.org/github.com/reddec/redirect)
 [![Snap Status](https://build.snapcraft.io/badge/reddec/redirect-to.svg)](https://build.snapcraft.io/user/reddec/redirect-to)
 
 Simple, very fast, in a single binary, with web UI HTTP redirect service
