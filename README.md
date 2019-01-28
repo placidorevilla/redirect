@@ -5,13 +5,13 @@
 [![GitHub release](https://img.shields.io/github/release/reddec/redirect.svg)](https://github.com/reddec/redirect/releases)
 [![license](https://img.shields.io/github/license/reddec/redirect.svg)](https://github.com/reddec/redirect)
 [![](https://godoc.org/github.com/reddec/redirect?status.svg)](http://godoc.org/github.com/reddec/redirect)
-[![Snap Status](https://build.snapcraft.io/badge/reddec/redirect-to.svg)](https://build.snapcraft.io/user/reddec/redirect-to)
+[![Snap Status](https://build.snapcraft.io/badge/reddec/redirect.svg)](https://build.snapcraft.io/user/reddec/redirect)
 
 Simple, very fast, in a single binary, with web UI HTTP redirect service
 
 # Install
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/monexec)
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/redirect-to)
 
 * [snapcraft: redirect-to](https://snapcraft.io/redirect-to)
 
