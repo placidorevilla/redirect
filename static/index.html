@@ -4,8 +4,8 @@
   href="bootstrap.min.css" />
 
 <body ng-app="appModule"
-  class="container">
-  <table ng-controller="mainController"
+  class="container" ng-controller="mainController">
+  <table
     class="table">
     <thead>
       <tr>
@@ -67,6 +67,7 @@
               placeholder="Service"
               class="form-control"
               name="service"
+              ng-model="newService"
               id="newService" />
           </div>
         </div>
@@ -80,6 +81,7 @@
               class="form-control "
               placeholder="Target URL template"
               name="template"
+              ng-model="newTemplate"
               id="newTemplate" />
             <span class="help-block">All functions from Go text/template can be used with environment as http.Request</span>
           </div>
@@ -88,8 +90,9 @@
           <div class="col-lg-10 col-lg-offset-2">
             <button type="reset"
               class="btn btn-default">Cancel</button>
-            <button type="submit"
-              class="btn btn-success">Add</button>
+            <button
+              type="button"
+              class="btn btn-success" ng-click="add(newService, newTemplate)">Add</button>
           </div>
         </div>
       </fieldset>
