@@ -1,13 +1,13 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
-	"github.com/elazarl/go-bindata-assetfs"
-	"github.com/reddec/redirect"
-	"github.com/reddec/redirect/genui"
 	"net"
 	"net/http"
+
+	"github.com/reddec/redirect"
 )
 
 func main() {
@@ -29,13 +29,12 @@ func main() {
 	go func() {
 		panic(http.ListenAndServe(*bind, engine))
 	}()
+
+	static := http.FileServer(http.FS(redirect.DefaultUIStatic))
 	if *uiFolder != "" {
-		http.Handle("/ui/", http.StripPrefix("/ui", http.FileServer(http.Dir(*uiFolder))))
-	} else {
-		http.Handle("/ui/", http.StripPrefix("/ui", http.FileServer(
-			&assetfs.AssetFS{Asset: genui.Asset, AssetDir: genui.AssetDir, AssetInfo: genui.AssetInfo}),
-		))
+		static = http.FileServer(http.Dir(*uiFolder))
 	}
+	http.Handle("/ui/", static)
 	http.Handle("/api/", http.StripPrefix("/api/", ui))
 	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		// redirect to ui

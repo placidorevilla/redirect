@@ -1,6 +1,7 @@
 package redirect
 
 import (
+	"embed"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -11,6 +12,9 @@ const (
 	formFieldService  = "service"
 	headerRedirPort   = "X-Redir-Port"
 )
+
+//go:embed ui/*
+var DefaultUIStatic embed.FS
 
 // description of rule for API request
 type UIEntry struct {
