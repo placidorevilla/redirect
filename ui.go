@@ -14,9 +14,14 @@ const (
 )
 
 //go:embed ui/*
-var DefaultUIStatic embed.FS
+var defaultStaticUI embed.FS // nolint:gochecknoglobals
 
-// description of rule for API request
+// Get default UI static files (prefixed by ui/).
+func DefaultUIStatic() embed.FS {
+	return defaultStaticUI
+}
+
+// description of rule for API request.
 type UIEntry struct {
 	Template string `json:"template"`
 	Hits     int64  `json:"hits"`
@@ -59,7 +64,7 @@ func (ui *basicUI) ServeHTTP(wr http.ResponseWriter, rq *http.Request) {
 			ui.get(service, wr, rq)
 		}
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
-		ui.set(service, wr, rq)
+		ui.set(wr, rq)
 	case http.MethodDelete:
 		ui.remove(service, wr, rq)
 	default:
@@ -67,7 +72,7 @@ func (ui *basicUI) ServeHTTP(wr http.ResponseWriter, rq *http.Request) {
 	}
 }
 
-func (ui *basicUI) list(wr http.ResponseWriter, rq *http.Request) {
+func (ui *basicUI) list(wr http.ResponseWriter, _ *http.Request) {
 	var ans = make(map[string]*UIEntry)
 	entries, err := ui.storage.All()
 	if err != nil {
@@ -99,7 +104,7 @@ func (ui *basicUI) get(service string, wr http.ResponseWriter, rq *http.Request)
 	}, wr)
 }
 
-func (ui *basicUI) remove(service string, wr http.ResponseWriter, rq *http.Request) {
+func (ui *basicUI) remove(service string, wr http.ResponseWriter, _ *http.Request) {
 	err := ui.storage.Remove(service)
 	if err != nil {
 		http.Error(wr, err.Error(), http.StatusInternalServerError)
@@ -113,7 +118,7 @@ func (ui *basicUI) remove(service string, wr http.ResponseWriter, rq *http.Reque
 	wr.WriteHeader(http.StatusNoContent)
 }
 
-func (ui *basicUI) set(service string, wr http.ResponseWriter, rq *http.Request) {
+func (ui *basicUI) set(wr http.ResponseWriter, rq *http.Request) {
 	var entry UIEntry
 	if strings.Contains(rq.Header.Get("Content-Type"), "application/json") {
 		// parse entry as-is except hits
@@ -145,7 +150,7 @@ func (ui *basicUI) set(service string, wr http.ResponseWriter, rq *http.Request)
 	wr.WriteHeader(http.StatusNoContent)
 }
 
-// correctly send JSON with required headers
+// correctly send JSON with required headers.
 func sendJSON(data interface{}, w http.ResponseWriter) {
 	content, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
@@ -154,5 +159,5 @@ func sendJSON(data interface{}, w http.ResponseWriter) {
 	}
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write(content)
+	_, _ = w.Write(content)
 }

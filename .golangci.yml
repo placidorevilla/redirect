@@ -1,0 +1,12 @@
+linters:
+  enable-all: yes
+  disable:
+    - wsl
+    - lll
+    - gofumpt
+    - maligned
+    - gci
+    - exhaustivestruct
+    - nlreturn
+issues:
+  exclude-use-default: yes

@@ -17,7 +17,7 @@ type engine struct {
 	rules   map[string]*template.Template
 }
 
-// Create default engine based on provided storage and sink
+// Create default engine based on provided storage and sink.
 func DefaultEngine(storage Storage, sink StatWriter) Engine {
 	if storage == nil {
 		panic("storage is nil")
@@ -70,13 +70,13 @@ func (eng *engine) ServeHTTP(wr http.ResponseWriter, rq *http.Request) {
 func (eng *engine) Reload() error {
 	rules, err := eng.storage.All()
 	if err != nil {
-		return fmt.Errorf("engine: read rules from storage: %v", err)
+		return fmt.Errorf("engine: read rules from storage: %w", err)
 	}
 	var swap = make(map[string]*template.Template)
 	for _, rule := range rules {
 		t, err := template.New("").Parse(rule.LocationTemplate)
 		if err != nil {
-			return fmt.Errorf("engine: parse rule for url %v: %v", rule.URL, err)
+			return fmt.Errorf("engine: parse rule for url %v: %w", rule.URL, err)
 		}
 		swap[rule.URL] = t
 	}

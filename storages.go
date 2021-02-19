@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -9,14 +10,14 @@ import (
 )
 
 // Simple single-file storage. All rules saved as-is by JSON indented encoder to the provided file after each Set ops.
-type JsonStorage struct {
+type JSONStorage struct {
 	FileName string // File name to store and read
 	cache    map[string]string
 	lock     sync.RWMutex
 }
 
-// Set or replace one rule, serialize cache to JSON and then dump to disk. Even if dump failed rule is saved into cache
-func (js *JsonStorage) Set(url string, locationTemplate string) error {
+// Set or replace one rule, serialize cache to JSON and then dump to disk. Even if dump failed rule is saved into cache.
+func (js *JSONStorage) Set(url string, locationTemplate string) error {
 	js.lock.Lock()
 	defer js.lock.Unlock()
 	if js.cache == nil {
@@ -26,16 +27,16 @@ func (js *JsonStorage) Set(url string, locationTemplate string) error {
 	return js.unsafeDump()
 }
 
-// Get single record from cache
-func (js *JsonStorage) Get(url string) (string, bool) {
+// Get single record from cache.
+func (js *JSONStorage) Get(url string) (string, bool) {
 	js.lock.RLock()
 	defer js.lock.RUnlock()
 	v, ok := js.cache[url]
 	return v, ok
 }
 
-// Remove rule from cache and save dump to disk. Even if dump failed rule removed from cache
-func (js *JsonStorage) Remove(url string) error {
+// Remove rule from cache and save dump to disk. Even if dump failed rule removed from cache.
+func (js *JSONStorage) Remove(url string) error {
 	if js.cache == nil {
 		return nil
 	}
@@ -45,8 +46,8 @@ func (js *JsonStorage) Remove(url string) error {
 	return js.unsafeDump()
 }
 
-// All rules stored in cache. Never returns error
-func (js *JsonStorage) All() ([]*Rule, error) {
+// All rules stored in cache. Never returns error.
+func (js *JSONStorage) All() ([]*Rule, error) {
 	var ans = make([]*Rule, 0, len(js.cache))
 	js.lock.RLock()
 	defer js.lock.RUnlock()
@@ -59,8 +60,8 @@ func (js *JsonStorage) All() ([]*Rule, error) {
 	return ans, nil
 }
 
-// Read all rules from file. Will not update cache if file will not exists
-func (js *JsonStorage) Reload() error {
+// Read all rules from file. Will not update cache if file will not exists.
+func (js *JSONStorage) Reload() error {
 	js.lock.RLock() // prevent read and write the same file
 	data, err := ioutil.ReadFile(js.FileName)
 	js.lock.RUnlock()
@@ -69,13 +70,13 @@ func (js *JsonStorage) Reload() error {
 		log.Println(js.FileName, err)
 		return nil
 	} else if err != nil {
-		return err
+		return fmt.Errorf("read JSON config: %w", err)
 	}
 	var cache map[string]string
 	err = json.Unmarshal(data, &cache)
 	if err != nil {
 		// failed to decode json - mb broken?
-		return err
+		return fmt.Errorf("parse JSON config: %w", err)
 	}
 	js.lock.Lock()
 	js.cache = cache
@@ -83,10 +84,10 @@ func (js *JsonStorage) Reload() error {
 	return nil
 }
 
-func (js *JsonStorage) unsafeDump() error {
+func (js *JSONStorage) unsafeDump() error {
 	data, err := json.MarshalIndent(js.cache, "", "    ")
 	if err != nil {
-		return err
+		return fmt.Errorf("marshal JSON config: %w", err)
 	}
-	return ioutil.WriteFile(js.FileName, data, 0755)
+	return ioutil.WriteFile(js.FileName, data, 0600)
 }

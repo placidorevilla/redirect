@@ -3,7 +3,7 @@ package main
 import (
 	_ "embed"
 	"flag"
-	"fmt"
+	"log"
 	"net"
 	"net/http"
 
@@ -22,7 +22,7 @@ func main() {
 
 	// init defaults
 	stats := redirect.InMemoryStats()
-	storage := &redirect.JsonStorage{FileName: *configFile}
+	storage := &redirect.JSONStorage{FileName: *configFile}
 	engine := redirect.DefaultEngine(storage, stats)
 	ui := redirect.DefaultUI(storage, stats, engine, port)
 
@@ -30,7 +30,7 @@ func main() {
 		panic(http.ListenAndServe(*bind, engine))
 	}()
 
-	static := http.FileServer(http.FS(redirect.DefaultUIStatic))
+	static := http.FileServer(http.FS(redirect.DefaultUIStatic()))
 	if *uiFolder != "" {
 		static = http.FileServer(http.Dir(*uiFolder))
 	}
@@ -40,7 +40,7 @@ func main() {
 		// redirect to ui
 		http.Redirect(writer, request, "ui/", http.StatusTemporaryRedirect)
 	})
-	fmt.Println("UI:", *uiAddr)
-	fmt.Println("Bind:", *bind)
+	log.Println("UI:", *uiAddr)
+	log.Println("Bind:", *bind)
 	panic(http.ListenAndServe(*uiAddr, nil))
 }
